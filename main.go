@@ -14,24 +14,16 @@ func init() {
 }
 
 func update(screen *ebiten.Image) error {
-	for _, o := range objects {
-		err := o.Update()
-		if err != nil {
-			return err
-		}
+	err := entities.UpdateAll(objects)
+	if err != nil {
+		return err
 	}
 
 	if ebiten.IsDrawingSkipped() {
 		return nil
 	}
 
-	for _, o := range objects {
-		err := o.Render(screen)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return entities.RenderAll(objects, screen)
 }
 
 func main() {

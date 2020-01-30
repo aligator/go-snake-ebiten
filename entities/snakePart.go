@@ -3,8 +3,6 @@ package entities
 import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
-	"log"
 )
 
 type PartType int
@@ -16,15 +14,6 @@ const (
 )
 
 var imgHead, imgBody, imgTail *ebiten.Image
-
-func mustLoadTexture(path string) *ebiten.Image {
-	img, _, err := ebitenutil.NewImageFromFile(path, ebiten.FilterDefault)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return img
-}
 
 func init() {
 	fmt.Println("Init SnakePart")
@@ -56,11 +45,11 @@ func (s SnakePart) Update() error {
 	return nil
 }
 
-func (s SnakePart) Render(i *ebiten.Image) error {
+func (s SnakePart) Render(screen *ebiten.Image) error {
 	opt := ebiten.DrawImageOptions{}
 	opt.GeoM.Translate(s.Position.Xf(), s.Position.Yf())
 
-	i.DrawImage(resolveImage(s.Type), &opt)
+	screen.DrawImage(resolveImage(s.Type), &opt)
 
 	return nil
 }

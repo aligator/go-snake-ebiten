@@ -7,15 +7,14 @@ import (
 	"snake-ebiten/util"
 )
 
-var objects []entities.Object
+var game entities.Game
 
 func init() {
-	objects = append(objects, entities.NewSnake())
+	game = entities.NewGame()
 }
 
 func update(screen *ebiten.Image) error {
-	err := entities.UpdateAll(objects)
-	if err != nil {
+	if err := game.Update(); err != nil {
 		return err
 	}
 
@@ -23,11 +22,11 @@ func update(screen *ebiten.Image) error {
 		return nil
 	}
 
-	return entities.RenderAll(objects, screen)
+	return game.Render(screen)
 }
 
 func main() {
-	if err := ebiten.Run(update, util.Width, util.Height, 1, "Hello, World!"); err != nil {
+	if err := ebiten.Run(update, util.Width, util.Height, 1, "Snake"); err != nil {
 		log.Fatal(err)
 	}
 }

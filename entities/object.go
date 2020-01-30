@@ -2,6 +2,8 @@ package entities
 
 import (
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"log"
 	"snake-ebiten/util"
 )
 
@@ -18,29 +20,20 @@ func (p Point) Yf() float64 {
 	return float64(p.Y * util.GridSize)
 }
 
+func (p Point) Equals(p2 Point) bool {
+	return p.X == p2.X && p.Y == p2.Y
+}
+
 type Object interface {
 	Update() error
 	Render(screen *ebiten.Image) error
 }
 
-func UpdateAll(objects []Object) error {
-	for _, o := range objects {
-		err := o.Update()
-		if err != nil {
-			return err
-		}
+func mustLoadTexture(path string) *ebiten.Image {
+	img, _, err := ebitenutil.NewImageFromFile(path, ebiten.FilterDefault)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return nil
-}
-
-func RenderAll(objects []Object, screen *ebiten.Image) error {
-	for _, o := range objects {
-		err := o.Render(screen)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return img
 }

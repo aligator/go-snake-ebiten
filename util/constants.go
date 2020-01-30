@@ -6,4 +6,6 @@ const (
 	GridHeight = 30
 	Width      = GridSize * GridWidth
 	Height     = GridSize * GridHeight
+
+	SnakeSpeed = 10
 )

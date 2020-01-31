@@ -39,6 +39,7 @@ func resolveSnakeImage(t PartType) *ebiten.Image {
 type SnakePart struct {
 	position Point
 	partType PartType
+	isEating bool
 }
 
 func (s SnakePart) Update() error {

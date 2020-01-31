@@ -6,15 +6,11 @@ import (
 	"github.com/hajimehoshi/ebiten/text"
 	"golang.org/x/image/font/basicfont"
 	"image/color"
-	"math/rand"
 	"strconv"
-	"time"
 )
 
 func init() {
 	fmt.Println("Init Hud")
-
-	rand.Seed(time.Now().UnixNano())
 }
 
 type Hud struct {

@@ -105,6 +105,9 @@ func (s *Snake) Update() error {
 			if s.game.cooky.position.Equals(newHead.position) {
 				s.game.cooky.respawn()
 				s.game.incScore()
+
+				// eat
+				newHead.isEating = true
 			}
 
 			// no need to move snake if game ended
@@ -116,8 +119,16 @@ func (s *Snake) Update() error {
 
 			// transform old head to body
 			s.parts[len(s.parts)-2].partType = Body
-			// remove old tail
-			s.parts = append(s.parts[:0], s.parts[0+1:]...)
+
+			// remove tail only if no need to grow
+			if !s.parts[0].isEating {
+				// remove old tail
+				s.parts = append(s.parts[:0], s.parts[0+1:]...)
+			} else {
+				// stop eating so that in the next iteration the tail will be removed
+				s.parts[0].isEating = false
+			}
+
 			// transform new tail to tail
 			s.parts[0].partType = Tail
 		}

@@ -24,7 +24,7 @@ type Cooky struct {
 
 func NewCooky(g *Game) *Cooky {
 	c := Cooky{}
-	c.Respawn()
+	c.respawn()
 
 	return &c
 }
@@ -42,7 +42,7 @@ func (c *Cooky) Render(screen *ebiten.Image) error {
 	return nil
 }
 
-func (c *Cooky) Respawn() {
+func (c *Cooky) respawn() {
 	maxX := util.GridWidth
 	maxY := util.GridHeight
 

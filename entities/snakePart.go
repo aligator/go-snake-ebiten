@@ -23,7 +23,7 @@ func init() {
 	imgTail = mustLoadTexture("assets/textures/snake_back.png")
 }
 
-func resolveImage(t PartType) *ebiten.Image {
+func resolveSnakeImage(t PartType) *ebiten.Image {
 	switch t {
 	case Head:
 		return imgHead
@@ -37,19 +37,19 @@ func resolveImage(t PartType) *ebiten.Image {
 }
 
 type SnakePart struct {
-	Position Point
-	Type     PartType
+	position Point
+	partType PartType
 }
 
 func (s SnakePart) Update() error {
+	// todo: smooth move
 	return nil
 }
 
 func (s SnakePart) Render(screen *ebiten.Image) error {
 	opt := ebiten.DrawImageOptions{}
-	opt.GeoM.Translate(s.Position.Xf(), s.Position.Yf())
+	opt.GeoM.Translate(s.position.Xf(), s.position.Yf())
 
-	screen.DrawImage(resolveImage(s.Type), &opt)
-
+	screen.DrawImage(resolveSnakeImage(s.partType), &opt)
 	return nil
 }

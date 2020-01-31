@@ -8,6 +8,8 @@ type Game struct {
 	snake *Snake
 	cooky *Cooky
 
+	hud *Hud
+
 	running bool
 	points  int
 }
@@ -20,6 +22,7 @@ func NewGame() Game {
 
 	g.snake = NewSnake(&g)
 	g.cooky = NewCooky(&g)
+	g.hud = NewHud(&g)
 	return g
 }
 
@@ -31,9 +34,13 @@ func (g Game) IsRunning() bool {
 	return g.running
 }
 
+func (g *Game) incScore() {
+	g.points++
+}
+
 func (g *Game) Update() error {
 	if g.IsRunning() {
-		if err := executeUpdates(g.snake.Update, g.cooky.Update); err != nil {
+		if err := executeUpdates(g.snake.Update, g.cooky.Update, g.hud.Update); err != nil {
 			return err
 		}
 	}
@@ -41,7 +48,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Render(screen *ebiten.Image) error {
-	if err := executeRenderers(screen, g.snake.Render, g.cooky.Render); err != nil {
+	if err := executeRenderers(screen, g.snake.Render, g.cooky.Render, g.hud.Render); err != nil {
 		return err
 	}
 	return nil

@@ -31,22 +31,22 @@ func NewSnake(g *Game) *Snake {
 		game: g,
 		parts: []SnakePart{
 			{
-				Position: Point{
+				position: Point{
 					X: center.X - 1,
 					Y: center.Y,
 				},
-				Type: Tail,
+				partType: Tail,
 			},
 			{
-				Position: center,
-				Type:     Body,
+				position: center,
+				partType: Body,
 			},
 			{
-				Position: Point{
+				position: Point{
 					X: center.X + 1,
 					Y: center.Y,
 				},
-				Type: Head,
+				partType: Head,
 			},
 		}}
 
@@ -72,29 +72,29 @@ func (s *Snake) Update() error {
 
 			// create new head
 			newHead := SnakePart{
-				Position: s.parts[len(s.parts)-1].Position,
-				Type:     Head,
+				position: s.parts[len(s.parts)-1].position,
+				partType: Head,
 			}
 			switch s.lastDir {
 			case up:
-				newHead.Position.Y--
+				newHead.position.Y--
 			case down:
-				newHead.Position.Y++
+				newHead.position.Y++
 			case left:
-				newHead.Position.X--
+				newHead.position.X--
 			case right:
-				newHead.Position.X++
+				newHead.position.X++
 			}
 
 			// check if head collides with something
 			// 1. with borders
-			if newHead.Position.X > util.GridWidth-1 || newHead.Position.X < 0 ||
-				newHead.Position.Y > util.GridHeight-1 || newHead.Position.Y < 0 {
+			if newHead.position.X > util.GridWidth-1 || newHead.position.X < 0 ||
+				newHead.position.Y > util.GridHeight-1 || newHead.position.Y < 0 {
 				s.game.End()
 			} else {
 				// 2. with snake itself
 				for _, part := range s.parts {
-					if newHead.Position.Equals(part.Position) {
+					if newHead.position.Equals(part.position) {
 						s.game.End()
 						break
 					}
@@ -102,8 +102,9 @@ func (s *Snake) Update() error {
 			}
 
 			// check for collision with cooky
-			if s.game.cooky.position.Equals(newHead.Position) {
-				s.game.cooky.Respawn()
+			if s.game.cooky.position.Equals(newHead.position) {
+				s.game.cooky.respawn()
+				s.game.incScore()
 			}
 
 			// no need to move snake if game ended
@@ -114,11 +115,11 @@ func (s *Snake) Update() error {
 			s.parts = append(s.parts, newHead)
 
 			// transform old head to body
-			s.parts[len(s.parts)-2].Type = Body
+			s.parts[len(s.parts)-2].partType = Body
 			// remove old tail
 			s.parts = append(s.parts[:0], s.parts[0+1:]...)
 			// transform new tail to tail
-			s.parts[0].Type = Tail
+			s.parts[0].partType = Tail
 		}
 
 		s.updateCount++

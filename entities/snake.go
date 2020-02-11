@@ -23,16 +23,16 @@ type Snake struct {
 }
 
 func NewSnake(g *Game) *Snake {
-	center := Point{
+	center := NewGridPoint(Point{
 		X: util.GridWidth / 2,
 		Y: util.GridHeight / 2,
-	}
+	})
 	s := Snake{
 		game: g,
 		parts: []SnakePart{
 			{
 				position: Point{
-					X: center.X - 1,
+					X: center.X - util.GridSize,
 					Y: center.Y,
 				},
 				partType: Tail,
@@ -43,7 +43,7 @@ func NewSnake(g *Game) *Snake {
 			},
 			{
 				position: Point{
-					X: center.X + 1,
+					X: center.X + util.GridSize,
 					Y: center.Y,
 				},
 				partType: Head,
@@ -77,24 +77,24 @@ func (s *Snake) Update() error {
 			}
 			switch s.lastDir {
 			case up:
-				newHead.position.Y--
+				newHead.position.DecGridY()
 			case down:
-				newHead.position.Y++
+				newHead.position.IncGridY()
 			case left:
-				newHead.position.X--
+				newHead.position.DecGridX()
 			case right:
-				newHead.position.X++
+				newHead.position.IncGridX()
 			}
 
 			// check if head collides with something
 			// 1. with borders
-			if newHead.position.X > util.GridWidth-1 || newHead.position.X < 0 ||
-				newHead.position.Y > util.GridHeight-1 || newHead.position.Y < 0 {
+			if newHead.position.GridX() > util.GridWidth-1 || newHead.position.GridX() < 0 ||
+				newHead.position.GridY() > util.GridHeight-1 || newHead.position.GridY() < 0 {
 				s.game.End()
 			} else {
 				// 2. with snake itself
 				for _, part := range s.parts {
-					if newHead.position.Equals(part.position) {
+					if newHead.position == part.position {
 						s.game.End()
 						break
 					}
@@ -102,7 +102,7 @@ func (s *Snake) Update() error {
 			}
 
 			// check for collision with cooky
-			if s.game.cooky.position.Equals(newHead.position) {
+			if s.game.cooky.position == newHead.position {
 				s.game.cooky.respawn()
 				s.game.incScore()
 

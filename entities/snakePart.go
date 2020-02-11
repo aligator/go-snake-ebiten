@@ -49,7 +49,7 @@ func (s SnakePart) Update() error {
 
 func (s SnakePart) Render(screen *ebiten.Image) error {
 	opt := ebiten.DrawImageOptions{}
-	opt.GeoM.Translate(s.position.Xf(), s.position.Yf())
+	opt.GeoM.Translate(s.position.X, s.position.Y)
 
 	screen.DrawImage(resolveSnakeImage(s.partType), &opt)
 	return nil

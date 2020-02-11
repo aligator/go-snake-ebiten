@@ -8,20 +8,39 @@ import (
 )
 
 type Point struct {
-	X int
-	Y int
+	X float64
+	Y float64
 }
 
-func (p Point) Xf() float64 {
-	return float64(p.X * util.GridSize)
+func (p Point) GridX() int {
+	return int(p.X / util.GridSize)
 }
 
-func (p Point) Yf() float64 {
-	return float64(p.Y * util.GridSize)
+func (p Point) GridY() int {
+	return int(p.Y / util.GridSize)
 }
 
-func (p Point) Equals(p2 Point) bool {
-	return p.X == p2.X && p.Y == p2.Y
+func (p *Point) IncGridX() {
+	p.X += util.GridSize
+}
+
+func (p *Point) IncGridY() {
+	p.Y += util.GridSize
+}
+
+func (p *Point) DecGridX() {
+	p.X -= util.GridSize
+}
+
+func (p *Point) DecGridY() {
+	p.Y -= util.GridSize
+}
+
+func NewGridPoint(point Point) Point {
+	return Point{
+		X: point.X * util.GridSize,
+		Y: point.Y * util.GridSize,
+	}
 }
 
 type Object interface {

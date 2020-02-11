@@ -35,7 +35,7 @@ func (c *Cooky) Update() error {
 
 func (c *Cooky) Render(screen *ebiten.Image) error {
 	opt := ebiten.DrawImageOptions{}
-	opt.GeoM.Translate(c.position.Xf(), c.position.Yf())
+	opt.GeoM.Translate(c.position.X, c.position.Y)
 
 	screen.DrawImage(imgCooky, &opt)
 
@@ -49,8 +49,8 @@ func (c *Cooky) respawn() {
 	x := rand.Intn(maxX)
 	y := rand.Intn(maxY)
 
-	c.position = Point{
-		X: x,
-		Y: y,
-	}
+	c.position = NewGridPoint(Point{
+		X: float64(x),
+		Y: float64(y),
+	})
 }

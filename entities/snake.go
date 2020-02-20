@@ -5,19 +5,10 @@ import (
 	"snake-ebiten/util"
 )
 
-type direction int
-
-const (
-	up direction = iota + 1
-	down
-	left
-	right
-)
-
 type Snake struct {
 	game    *Game
-	parts   []SnakePart
-	lastDir direction
+	parts   []*SnakePart
+	lastDir Direction
 
 	updateCount uint
 }
@@ -29,9 +20,13 @@ func NewSnake(g *Game) *Snake {
 	})
 	s := Snake{
 		game: g,
-		parts: []SnakePart{
+		parts: []*SnakePart{
 			{
 				position: Point{
+					X: center.X - util.GridSize,
+					Y: center.Y,
+				},
+				movingTo: Point{
 					X: center.X - util.GridSize,
 					Y: center.Y,
 				},
@@ -39,10 +34,15 @@ func NewSnake(g *Game) *Snake {
 			},
 			{
 				position: center,
+				movingTo: center,
 				partType: Body,
 			},
 			{
 				position: Point{
+					X: center.X + util.GridSize,
+					Y: center.Y,
+				},
+				movingTo: Point{
 					X: center.X + util.GridSize,
 					Y: center.Y,
 				},
@@ -57,13 +57,13 @@ func (s *Snake) Update() error {
 	// check keys
 	switch {
 	case ebiten.IsKeyPressed(ebiten.KeyUp):
-		s.lastDir = up
+		s.lastDir = Up
 	case ebiten.IsKeyPressed(ebiten.KeyDown):
-		s.lastDir = down
+		s.lastDir = Down
 	case ebiten.IsKeyPressed(ebiten.KeyLeft):
-		s.lastDir = left
+		s.lastDir = Left
 	case ebiten.IsKeyPressed(ebiten.KeyRight):
-		s.lastDir = right
+		s.lastDir = Right
 	}
 
 	if s.lastDir != 0 {
@@ -71,30 +71,22 @@ func (s *Snake) Update() error {
 			s.updateCount = 0
 
 			// create new head
-			newHead := SnakePart{
-				position: s.parts[len(s.parts)-1].position,
+			newHead := &SnakePart{
 				partType: Head,
 			}
-			switch s.lastDir {
-			case up:
-				newHead.position.DecGridY()
-			case down:
-				newHead.position.IncGridY()
-			case left:
-				newHead.position.DecGridX()
-			case right:
-				newHead.position.IncGridX()
-			}
+
+			newHead.SetPos(s.parts[len(s.parts)-1].position)
+			newHead.Move(s.lastDir)
 
 			// check if head collides with something
 			// 1. with borders
-			if newHead.position.GridX() > util.GridWidth-1 || newHead.position.GridX() < 0 ||
-				newHead.position.GridY() > util.GridHeight-1 || newHead.position.GridY() < 0 {
+			if newHead.movingTo.GridX() > util.GridWidth-1 || newHead.movingTo.GridX() < 0 ||
+				newHead.movingTo.GridY() > util.GridHeight-1 || newHead.movingTo.GridY() < 0 {
 				s.game.End()
 			} else {
 				// 2. with snake itself
 				for _, part := range s.parts {
-					if newHead.position == part.position {
+					if newHead.movingTo == part.position {
 						s.game.End()
 						break
 					}
@@ -102,7 +94,7 @@ func (s *Snake) Update() error {
 			}
 
 			// check for collision with cooky
-			if s.game.cooky.position == newHead.position {
+			if s.game.cooky.position == newHead.movingTo {
 				s.game.cooky.respawn()
 				s.game.incScore()
 
@@ -117,7 +109,7 @@ func (s *Snake) Update() error {
 
 			s.parts = append(s.parts, newHead)
 
-			// transform old head to body
+			// translate old head to body
 			s.parts[len(s.parts)-2].partType = Body
 
 			// remove tail only if no need to grow
@@ -129,7 +121,7 @@ func (s *Snake) Update() error {
 				s.parts[0].isEating = false
 			}
 
-			// transform new tail to tail
+			// translate new tail to tail
 			s.parts[0].partType = Tail
 		}
 

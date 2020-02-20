@@ -56,3 +56,27 @@ func mustLoadTexture(path string) *ebiten.Image {
 
 	return img
 }
+
+type Direction int
+
+const (
+	Up Direction = iota + 1
+	Down
+	Left
+	Right
+)
+
+func (d Direction) translate(p Point) Point {
+	switch d {
+	case Up:
+		p.DecGridY()
+	case Down:
+		p.IncGridY()
+	case Left:
+		p.DecGridX()
+	case Right:
+		p.IncGridX()
+	}
+
+	return p
+}

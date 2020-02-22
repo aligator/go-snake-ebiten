@@ -52,7 +52,12 @@ func (s *SnakePart) SetPos(pos Point) {
 }
 
 func (s *SnakePart) Move(dir Direction) {
+	s.MoveTo(dir.translate(s.position))
 	s.movingTo = dir.translate(s.position)
+}
+
+func (s *SnakePart) MoveTo(pos Point) {
+	s.movingTo = pos
 	s.movingProgress = 0
 }
 

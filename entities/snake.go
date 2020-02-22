@@ -114,8 +114,14 @@ func (s *Snake) Update() error {
 
 			// remove tail only if no need to grow
 			if !s.parts[0].isEating {
-				// remove old tail
-				s.parts = append(s.parts[:0], s.parts[0+1:]...)
+				// remove old tail (but only after it finished smooth-moving)
+				if !s.parts[0].IsMoving() && s.parts[0].position == s.parts[1].position {
+					s.parts = append(s.parts[:0], s.parts[0+1:]...)
+				}
+
+				// smooth-move the tail
+				s.parts[0].MoveTo(s.parts[1].position)
+
 			} else {
 				// stop eating so that in the next iteration the tail will be removed
 				s.parts[0].isEating = false
@@ -145,5 +151,8 @@ func (s Snake) Render(screen *ebiten.Image) error {
 			return err
 		}
 	}
+
+	// paint tail again, because it has to be on the top (for smooth-move)
+	s.parts[0].Render(screen)
 	return nil
 }

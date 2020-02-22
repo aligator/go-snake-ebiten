@@ -21,7 +21,6 @@ func init() {
 
 	imgHead = mustLoadTexture("assets/textures/snake_front.png")
 	imgBody = mustLoadTexture("assets/textures/snake.png")
-	imgTail = mustLoadTexture("assets/textures/snake_back.png")
 }
 
 func resolveSnakeImage(t PartType) *ebiten.Image {
@@ -31,7 +30,7 @@ func resolveSnakeImage(t PartType) *ebiten.Image {
 	case Body:
 		return imgBody
 	case Tail:
-		return imgTail
+		return imgBody
 	default:
 		return nil
 	}
